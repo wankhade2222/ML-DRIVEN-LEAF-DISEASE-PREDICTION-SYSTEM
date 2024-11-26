@@ -1,52 +1,72 @@
 import streamlit as st
+from streamlit_option_menu import option_menu
 import tensorflow as tf
 import numpy as np
 
 
 #Tensorflow Model Prediction
 def model_prediction(test_image):
-    model = tf.keras.models.load_model("trained_plant_disease_model.keras")
+    model = tf.keras.models.load_model("trained_plant_disease_model(1).keras")
     image = tf.keras.preprocessing.image.load_img(test_image,target_size=(128,128))
     input_arr = tf.keras.preprocessing.image.img_to_array(image)
     input_arr = np.array([input_arr]) #convert single image to batch
     predictions = model.predict(input_arr)
     return np.argmax(predictions) #return index of max element
 
-#Sidebar
-st.sidebar.title("Dashboard")
-app_mode = st.sidebar.selectbox("Select Page",["Home","About","Disease Recognition"])
 
-#Main Page
-if(app_mode=="Home"):
-    st.header("ML-DRIVEN PLANT DISEASE PREDICTION SYSTEM")
-    st.markdown("""
-    Welcome to the Plant Disease Recognition System!
+
+# Sidebar Navigation
+selected = option_menu(
+    menu_title=None,  # No menu title
+    options=["Home", "About", "Detection", ],  # Menu options
+    icons=["house", "bar-chart", "search", ],  # Icons for the menu options
+    menu_icon="cast",  # Icon for the menu button (mobile view)
+    default_index=0,  # Default selected option
+    orientation="horizontal",  # Make the menu horizontal
+)
+
+# Pages
+if selected == "Home":
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-image: url(https://png.pngtree.com/thumb_back/fh260/background/20230613/pngtree-some-green-plants-and-leaves-against-a-dark-background-image_2899643.jpg);
+            background-size: cover;         
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
     
-    Our mission is to help in identifying plant diseases efficiently. Upload an image of a plant, and our system will analyze it to detect any signs of diseases. Together, let's protect our crops and ensure a healthier harvest!
+    st.markdown("""
+        <h1 style="text-align: center; color: green; font-size: 50px; text-shadow: 2px 2px 4px #000000;">
+        🌾ML-Driven Plant Disease Prediction System
+        </h1>
+        <br><br><br><br>
+                
+        <p style="text-align: center; font-size: 20px; color: white; text-shadow: 1px 1px 2px #000000;">
+        Protecting crops and enhancing agricultural productivity with cutting-edge technology.
+        </p>
+    """, unsafe_allow_html=True)
+       
+    
+    st.markdown("""
+        <div style="text-align: center;">
+            <button style="background-color: green; color: white; padding: 15px 30px; text-decoration: none; font-size: 20px; border-radius: 5px; border-color: black">
+                Start Detection Now
+            </button>
+        </div>
+    """, unsafe_allow_html=True)
 
-    ### How It Works
-    1. **Upload Image:** Go to the **Disease Recognition** page and upload an image of a plant with suspected diseases.
-    2. **Analysis:** Our system will process the image using advanced algorithms to identify potential diseases.
-    3. **Results:** View the results and recommendations for further action.
-
-    ### Why Choose Us?
-    - **Accuracy:** Our system utilizes state-of-the-art machine learning techniques for accurate disease detection.
-    - **User-Friendly:** Simple and intuitive interface for seamless user experience.
-    - **Fast and Efficient:** Receive results in seconds, allowing for quick decision-making.
-
-    ### Get Started
-    Click on the **Disease Recognition** page in the sidebar to upload an image and experience the power of our Plant Disease Recognition System!
-
-    ### About Us
-    Learn more about the project, our team, and our goals on the **About** page.
-    """)
-
-#About Project
-elif(app_mode=="About"):
+elif selected == "About":
     st.header("About")
     st.markdown("""
                 #### About Dataset
-                This dataset consists of about 46356 rgb images of healthy and diseased crop leaves which is categorized into 25 different classes.The total dataset is divided into 80/20 ratio of training and validation set preserving the directory structure.
+                This dataset consists of about 57944 rgb images of healthy and diseased crop leaves which is categorized into 25 different classes.The total dataset is divided into 80/20 ratio of training and validation set preserving the directory structure.
                 A new directory containing 33 test images is created later for prediction purpose.
                 #### Content
                 1. train (46356 images)
@@ -54,9 +74,23 @@ elif(app_mode=="About"):
                 3. validation (11588 images)
 
                 """)
+    st.markdown(
+        """
+        <style>
+        .stApp {
+            background-image: url(https://png.pngtree.com/thumb_back/fh260/background/20230613/pngtree-some-green-plants-and-leaves-against-a-dark-background-image_2899643.jpg);
+            background-size: cover;         
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
 
-#Prediction Page
-elif(app_mode=="Disease Recognition"):
+
+elif selected == "Detection":
     st.header("Disease Recognition")
     test_image = st.file_uploader("Choose an Image:")
     if(st.button("Show Image")):
